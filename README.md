@@ -1,1 +1,1 @@
-# interval-collision-detection
+# interval-collision-method
