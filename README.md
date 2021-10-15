@@ -1,1 +1,1 @@
-# interval-collision-method
+# interval-analysis-method
