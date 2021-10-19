@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import numpy as np
-from sympy.geometry import Point,Circle,Segment
+from sympy.geometry import Point,Circle,Segment,intersection
 import matplotlib.pyplot as plt
 from matplotlib.patches import Arc as Arc_patch
 
@@ -16,7 +16,7 @@ class Arc:
         self.circle = Circle(Point(x,y),r)  
         
     def encloses(self,point):
-        xp,yp = float(point.x),float(point.y)
+        xp,yp = float(point.x)-self.x,float(point.y)-self.y
         theta = np.arctan2(yp,xp) if yp>=0 else 2*np.pi + np.arctan2(yp,xp)
         if (theta>=self.theta1 and theta<=self.theta2) or \
            (theta>=self.theta2 and theta<=self.theta1):
@@ -54,22 +54,28 @@ def arc_arc(gamma2,gamma2prime):
     Else returns False
     """
     eta,etaprime = gamma2.circle,gamma2prime.circle
-    if len(intersection(eta,etaprime))==0:
-        return False
+    # if len(intersection(eta,etaprime))==0:
+    #     return False
     # Lemma 3.3 and 3.4
     if (arc_circle(gamma2,etaprime)==2 and arc_circle(gamma2prime,eta)==2) or \
        (arc_circle(gamma2,etaprime)==2 and arc_circle(gamma2prime,eta)==1) or \
        (arc_circle(gamma2,etaprime)==1 and arc_circle(gamma2prime,eta)==2):
         return True
-    if (arc_circle(gamma2,etaprime)==1 and arc_circle(gamma2prime,eta)==1) and \
-       (gamma2.theta1+gamma2.theta2>=0 and gamma2.theta1+gamma2.theta2<=2*np.pi) and \
-       (gamma2prime.theta1+gamma2prime.theta2>=0 and gamma2prime.theta1+gamma2prime.theta2<=2*np.pi):
-        return True
+    # if (arc_circle(gamma2,etaprime)==1 and arc_circle(gamma2prime,eta)==1) and \
+    #    (gamma2.theta1+gamma2.theta2>=0 and gamma2.theta1+gamma2.theta2<=2*np.pi) and \
+    #    (gamma2prime.theta1+gamma2prime.theta2>=0 and gamma2prime.theta1+gamma2prime.theta2<=2*np.pi):
+    #     return True
+    
+
     else:
+        intersect = intersection(eta,etaprime)
+        if len(intersect) > 1:
+            if gamma2.encloses(intersect[0]) and gamma2prime.encloses(intersect[0]):
+                return True
         return False     
 
 
-def line_arc(gamma2,l1prime):
+def line_arc(l1prime,gamma2):
     """
     Returns True if gamma2 includes l1prime partially or wholly
     Else returns False
