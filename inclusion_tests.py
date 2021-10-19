@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 import numpy as np
-from sympy.geometry import *
-from sympy import *
+from sympy.geometry import Point,Circle,Segment
+import matplotlib.pyplot as plt
+from matplotlib.patches import Arc as Arc_patch
 
 class Arc:
-    def __init__(self,r,theta1,theta2,x=0.0,y=0.0):
+    def __init__(self,r,theta1,theta2,origin = (0,0)):
+        x,y = origin
         self.x = x
         self.y = y
         self.r = r
         self.theta1 = theta1
         self.theta2 = theta2
-        self.endpoints = [Point(x+r*np.cos(theta1),y+r*np.sin(theta1)),Point(x+r*np.cos(theta2),y+r*np.sin(theta2))]
+        self.endpoints = [Point(self.x+r*np.cos(theta1),self.y+r*np.sin(theta1)),Point(self.x+r*np.cos(theta2),self.y+r*np.sin(theta2))]
         self.circle = Circle(Point(x,y),r)  
         
     def encloses(self,point):
@@ -21,6 +23,11 @@ class Arc:
             return True
         else:
             return False
+
+    def draw(self,ax,color):
+        ax.add_patch(Arc_patch((self.x, self.y), 2*self.r,2*self.r, theta1=np.rad2deg(self.theta1), theta2=np.rad2deg(self.theta2), linewidth=1, color=color))
+        
+                
         
 
 def arc_circle(gamma2,etaprime):
