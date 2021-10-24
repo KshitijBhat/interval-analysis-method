@@ -149,11 +149,11 @@ class Interval:
         
     def bisect(self,i):
         if i == 0:
-            L = Interval(self.r1, (self.r1+self.r2)/2, self.theta1, self.theta2)
-            R = Interval((self.r1+self.r2)/2 ,self.r2, self.theta1, self.theta2)
+            L = Interval(self.r1, (self.r1+self.r2)/2, self.theta1, self.theta2,self.origin)
+            R = Interval((self.r1+self.r2)/2 ,self.r2, self.theta1, self.theta2,self.origin)
         else:
-            L = Interval(self.r1, self.r2, self.theta1, (self.theta1+self.theta2)/2)
-            R = Interval(self.r1, self.r2, (self.theta1+self.theta2)/2, self.theta2) 
+            L = Interval(self.r1, self.r2, self.theta1, (self.theta1+self.theta2)/2,self.origin)
+            R = Interval(self.r1, self.r2, (self.theta1+self.theta2)/2, self.theta2,self.origin) 
         return L,R
     
     def inclusion_test(self,Iprime):
@@ -171,7 +171,7 @@ class Interval:
     
     def interval_analysis(self,Iprime,Nr,Ntheta):
         if not self.inclusion_test(Iprime):
-            J = Interval(0,0,0,0)
+            J = Interval(0,0,0,0,self.origin)
         else:
             N = Nr
             n = 0
@@ -202,5 +202,5 @@ class Interval:
                     Jtheta = [L.theta1,R.theta2]
                 N = Ntheta
                 n = 0
-            J = Interval(*Jr,*Jtheta)    
+            J = Interval(*Jr,*Jtheta,self.origin)    
         return J        
