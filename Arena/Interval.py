@@ -131,7 +131,10 @@ class Interval:
     def __contains__(self,point):
         r = np.linalg.norm(np.array((float(point[0]),float(point[1])))-np.array(self.origin))
         return (r<=self.r2 and r>=self.r1) and self.gamma1.encloses(point)    
-        
+    
+    def __repr__(self):
+        return f"Interval({self.r1},{self.r2},{self.theta1},{self.theta2},{self.origin})"
+    
     def draw(self,ax,color):
         try:
             l11, l12 = tuple(self.l1.points[0]),tuple(self.l1.points[1])
