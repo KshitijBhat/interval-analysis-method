@@ -65,12 +65,13 @@ def arc_arc(gamma2,gamma2prime):
     #     return True
     
 
-    else:
-        intersect = intersection(eta,etaprime)
-        if len(intersect) > 1:
-            if gamma2.encloses(intersect[0]) and gamma2prime.encloses(intersect[0]):
+    
+    intersect = intersection(eta,etaprime)
+    if len(intersect) > 0:
+        for i in range(len(intersect)):
+            if gamma2.encloses(intersect[i]) and gamma2prime.encloses(intersect[i]):
                 return True
-        return False     
+    return False     
 
 def line_arc(l1prime,gamma2):
     """
