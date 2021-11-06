@@ -97,7 +97,11 @@ class Interval:
                     thetae = []
                     rmin = d - gammaprime.r
                     phi = cart2pol(Point(Iprime.origin))[1]
-                    thi = np.arcsin(gammaprime.r/d)
+                    thetalol = gammaprime.r/d
+                    if thetalol>1 or thetalol<-1:
+                        thi = 0
+                    else:
+                        thi = np.arcsin(thetalol)
                     if (phi+thi>=self.theta1 and phi+thi<=self.theta2):
                         thetae.append((phi + thi )) 
                     if (phi-thi>=self.theta1 and phi-thi<=self.theta2):
@@ -111,7 +115,11 @@ class Interval:
                 gammaprime = kwargs['gammaprime']
                 d = np.linalg.norm(np.array(self.origin)-np.array(gammaprime.origin))
                 phi = cart2pol(Point(Iprime.origin))[1]
-                thi = np.arcsin(gammaprime.r/d)
+                thetalol = gammaprime.r/d
+                if thetalol>1 or thetalol<-1:
+                    thi = 0
+                else:
+                    thi = np.arcsin(thetalol)
                 thetae = phi + thi*(1 if (phi+thi>=self.theta1 and phi+thi<=self.theta2) else -1)
                 return [thetae]
             if 'gamma' in kwargs and 'lprime' in kwargs:
