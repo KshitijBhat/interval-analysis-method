@@ -140,6 +140,7 @@ class Interval:
         rs = []
         thetas = []
         test_pts = []
+        arc_cut = []
 
         for gmi in self.gamma:
             for gmp in Iprime.gamma:
@@ -148,12 +149,13 @@ class Interval:
                     expt = expts(gamma=gmi,gammaprime=gmp)
                     rs += expt[0]
                     thetas += expt[1]
-                test_pts += pts    
+                test_pts += pts  
             for lp in Iprime.l:
                 pts = line_arc(lp,gmi)
                 if len(pts) == 2:
                     test_pts += expts(lprime=lp,gamma=gmi)
                 test_pts += pts 
+                arc_cut.append(1)
         for li in self.l:
             for gmp in Iprime.gamma:
                 pts = line_arc(li,gmp)
@@ -161,7 +163,20 @@ class Interval:
                     thetas += expts(l=li,gammaprime=gmp) 
                 test_pts += pts    
             for lp in Iprime.l:
-                test_pts += line_line(li,lp) 
+                pts = line_line(li,lp) 
+                test_pts += pts
+                if len(pts)!=0 and len(arc_cut)!=0:
+                    ptx,pty = float(pts[0].x),float(pts[0].y)
+                    d = np.linalg.norm(np.array([ptx,pty])-np.array(self.origin))
+                    inta = intersection(lp,Circle(self.origin,d))
+                    if len(inta) == 2:
+                        midpt = Segment(*inta).midpoint
+                    if len(inta) == 1: 
+                        midpt = inta 
+                    else:
+                        midpt = []      
+                    test_pts += midpt
+                
         if self.gamma2.encloses(Point(Iprime.origin)) and Iprime.gamma2.encloses(Point(self.origin)):
             expt = expts(gamma=self.gamma2,gammaprime=Iprime.gamma2)
             rs += expt[0]
@@ -186,15 +201,20 @@ class Interval:
     @staticmethod
     def correction(thetas):
         tuts = []
+        tuts1 = []
         for theta in thetas:
             if theta>=0 and theta<= np.pi/2:
                 tuts.append(0)
             if theta>=3*np.pi/2 and theta<= 2*np.pi:
                 tuts.append(1)
+                tuts1.append(1)
+            if theta<0 and theta>= -1*np.pi/2:
+                tuts1.append(0)    
 
         if any(tuts) and not all(tuts):
             return [(theta-2*np.pi if theta>=3*np.pi/2 and theta<= 2*np.pi else theta) for theta in thetas]
-            print("correctioned")
+        if any(tuts1) and not all(tuts1):
+            return [(theta+2*np.pi if theta>-1*np.pi/2 and theta< 0 else theta) for theta in thetas]    
         else:
             return thetas
         
@@ -215,7 +235,6 @@ class Interval:
             Is.append(I3)
 
         return Is   
-
 
 def arc_arc(gamma2,gamma2prime):
     eta,etaprime = gamma2.circle,gamma2prime.circle
