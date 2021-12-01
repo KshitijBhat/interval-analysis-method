@@ -86,6 +86,10 @@ class Interval:
             self.gamma1.draw(ax,color)
             self.gamma2.draw(ax,color)
     def fast_analysis(self,Iprime):
+        D = np.linalg.norm(np.array(self.origin)-np.array(Iprime.origin))
+        if D>self.r2 + Iprime.r2:
+            return Interval(0,0,0,0,self.origin)
+        
         def cart2pol(pt):
             x,y = float(pt.x),float(pt.y)
             xi,yi = np.array([x,y])-np.array(self.origin)
