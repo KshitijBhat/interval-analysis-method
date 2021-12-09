@@ -41,7 +41,7 @@ class Robot(Interval):
         with concurrent.futures.ProcessPoolExecutor() as executor:
             J_futures = [executor.submit(super(Robot,self).interval_analysis,obstacle,5,5)for obstacle in self.obstacles]
         for Jf in  J_futures:
-            Js.append(Jf.result())   
+            Js.append(Jf.result)   
         # for f in concurrent.futures.as_completed(Js):
         #     print(f)
         # for obstacle in self.obstacles:
